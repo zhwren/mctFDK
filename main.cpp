@@ -98,15 +98,17 @@ int main()
 	fclose(fp);
 
 
-	std::map<int,float> correction;
+	float *correction = new float[20];
+	memset(correction, 1., sizeof(float)*20);
 	std::ifstream file("Correction");
 	if( file.is_open() )
 	{
-	  int key; float value;
-	  while( file >> key >> value )
-	    correction[key] = value;
+	  int key=0;
+	  while( file >> correction[key] )
+	    key++;
 	}
 	file.close();
+
 	SinogramPreProcess process;
 	process.SetPreParams(scannerGeometry, reconParams, prjParams.m_ProjectionAngleCount, pDarkImg, pAirscanImg, pSinogram);;
 	process.CallPreProcess(correction);

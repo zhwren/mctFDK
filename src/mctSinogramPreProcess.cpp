@@ -13,7 +13,6 @@ namespace mct
 	{
 		this->m_ProcessedSinogram = NULL;
 		this->m_ProcessedSinogramLen = 0;
-		this->m_Correction.clear();
 	}
 
 	SinogramPreProcess::~SinogramPreProcess()
@@ -57,7 +56,7 @@ namespace mct
 		return 0;
 	}
 	
-	int SinogramPreProcess::CallPreProcess(std::map<int,float> correction)
+	int SinogramPreProcess::CallPreProcess(float* correction)
 	{
 		MCT_ASSERT(m_DarkImg);
 		MCT_ASSERT(m_AirScanImg);
@@ -165,21 +164,21 @@ namespace mct
 				for(int iCols = 0; iCols < m_DetectorColumns; iCols++)
 				{
 				        int key = iCols>nCenterFirst?(iCols-nCenterFirst-23):(nCenterFirst-iCols);
-					if( m_Correction[key] != 0 ) *pSino *= m_Correction[key];
-				        //std::map<int,float>::iterator it;
-				        //for(it=m_Correction.begin(); it!=m_Correction.end(); it++)
-				        //{
-					//       if( it->first < 0 )
-					//       {
-					//	 if( iCols>nCenterFirst+it->first && iCols<nCenterFirst-it->first+23 )
-					//	   *pSino *= it->second;
-					//       }
-					//       else
-					//       {
-				        //         if( iCols==nCenterFirst-it->first||iCols==nCenterFirst+23+it->first )
-					//	   *pSino *= it->second;
-					//       }
-				        //}
+					if( key==0  ) *pSino *= m_Correction[0];
+					if( key==1  ) *pSino *= m_Correction[1];
+					if( key==24 ) *pSino *= m_Correction[2];
+					if( key==25 ) *pSino *= m_Correction[3];
+					if( key==48 ) *pSino *= m_Correction[4];
+					if( key==49 ) *pSino *= m_Correction[5];
+					if( key==72 ) *pSino *= m_Correction[6];
+					if( key==73 ) *pSino *= m_Correction[7];
+					if( key==96 ) *pSino *= m_Correction[8];
+					if( key==97 ) *pSino *= m_Correction[9];
+					if( key==120) *pSino *= m_Correction[10];
+					if( key==121) *pSino *= m_Correction[11];
+					if( key==144) *pSino *= m_Correction[12];
+					if( key==145) *pSino *= m_Correction[13];
+
 					pSinoProcessed = m_ProcessedSinogram + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;
 					pSinoProcessed_1 = m_ProcessedSinogram_1 + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;					
 					float logP = 1./(*pSino);
