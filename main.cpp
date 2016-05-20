@@ -53,11 +53,11 @@ ReconstructionParams InitReconParams()
 
 	reconParams.m_ReconColumnCount = 512;
 	reconParams.m_ReconRowCount = 512;
-	reconParams.m_ReconSliceCount = 10;//16
+	reconParams.m_ReconSliceCount = 16;
 
 	reconParams.m_PixelSpacingX = 0.5f;
 	reconParams.m_PixelSpacingY = 0.5f;
-	reconParams.m_PixelSpacingZ = 1;//0.5f;
+	reconParams.m_PixelSpacingZ = 0.5f;
 
 
 	reconParams.m_ReconWindowMidColumn = (reconParams.m_ReconColumnCount-1)/2.0;
@@ -80,24 +80,19 @@ int main()
 
 
 	float *pDarkImg = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount];
-	//float *pAirscanImg = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount];
 	float *pAirscanImg = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount];
 	float *pSinogram = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount];
 	float *pRecon = new float[reconParams.m_ReconColumnCount*reconParams.m_ReconRowCount*reconParams.m_ReconSliceCount];
 
-	//FILE *fp = fopen("DarkImg.txt","r");
-	FILE *fp = fopen("DarkImg.bin","rb");
+	FILE *fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/DarkImg.bin","rb");
 	fread(pDarkImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount,fp);
 	fclose(fp);
 
-	//fp = fopen("AirscanImg.txt","r");
-	fp = fopen("AirscanImg.bin","rb");
-	//fread(pAirscanImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount,fp);
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/airresult/air1.bin","rb");
 	fread(pAirscanImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 
-	//fp = fopen("ScanData.txt","r");
-	fp = fopen("ScanData_Catphan500.bin","rb");
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/sinoresult/sino1.bin","rb");
 	fread(pSinogram,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 

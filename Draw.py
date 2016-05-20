@@ -59,8 +59,8 @@ class mct:
         norm = mpl.colors.Normalize(vmin=0.019,vmax=0.023)
         plt.figure(figsize=(6,6))
         plt.imshow(self.imgData,cmap=cmap,norm=norm)
-        #plt.figure(figsize=(6,6))
-        #plt.plot(range(512), self.imgData[256,:])
+#        plt.figure(figsize=(6,6))
+#        plt.plot(range(512), self.imgData[256,:])
         plt.show()
 
 if __name__ == "__main__":
