@@ -13,6 +13,7 @@ namespace mct
 	{
 		this->m_ProcessedSinogram = NULL;
 		this->m_ProcessedSinogramLen = 0;
+		this->m_Correction.clear();
 	}
 
 	SinogramPreProcess::~SinogramPreProcess()
@@ -56,11 +57,12 @@ namespace mct
 		return 0;
 	}
 	
-	int SinogramPreProcess::CallPreProcess()
+	int SinogramPreProcess::CallPreProcess(std::map<int,float> correction)
 	{
 		MCT_ASSERT(m_DarkImg);
 		MCT_ASSERT(m_AirScanImg);
 		MCT_ASSERT(m_Sinogram);
+		m_Correction = correction;
 		
 		int processedSinogramLen = (m_DetectorColumns+m_DetectorCounts-1)*m_DetectorRows*m_ProjectionCounts;
 		if((this->m_ProcessedSinogram == NULL) || (this->m_ProcessedSinogramLen < processedSinogramLen))
@@ -82,9 +84,7 @@ namespace mct
 		float *pAir = m_AirScanImg;
 		float *pSinoProcessed, *pSinoProcessed_1;	//计算校正系数所用指针 
 		float *pSino = m_Sinogram;
-		float Sino1,Sino2,Sino3,Sino4,iView1,iView2,iRow1,iRow2,Air_aver,Sino_aver;
-		float Views = 3;
-		float Rows = 1;
+		float Air_aver,Sino_aver;
 		float iMax;
 		int   nColumn;
 		float a_0,a_1,a_2,a_3,a_4,Len;
@@ -157,7 +157,6 @@ namespace mct
 					pDark++; pAir++; pSino++;
 				}
 			}
-//......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............oooOO0Ooooo............oooOO0OOooo......
                         int nCenterFirst = nColumn / 24 * 24;
 			pSino = pSino - m_DetectorColumns*m_DetectorRows;
 
@@ -165,44 +164,22 @@ namespace mct
 			{
 				for(int iCols = 0; iCols < m_DetectorColumns; iCols++)
 				{
-//				  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				  //    The Centeral Ring
-//                                        if( iCols==nCenterFirst   || iCols==nCenterFirst+23 ) *pSino *= 1.016;
-//                                        if( iCols==nCenterFirst-1 || iCols==nCenterFirst+24 ) *pSino *= 1.01;
-//				//	if( iCols >nCenterFirst   && iCols <nCenterFirst+23 ) *pSino *= 1.005;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Second Ring
-//                                //        if( iCols==nCenterFirst-23|| iCols==nCenterFirst+46 ) *pSino *= 0.998;
-//                                //        if( iCols==nCenterFirst-22|| iCols==nCenterFirst+45 ) *pSino *= 0.998;
-//                                //        if( iCols==nCenterFirst-21|| iCols==nCenterFirst+44 ) *pSino *= 0.998;
-//                                //        if( iCols==nCenterFirst-20|| iCols==nCenterFirst+43 ) *pSino *= 0.998;
-//                                        if( iCols==nCenterFirst-24|| iCols==nCenterFirst+47 ) *pSino *= 1.01;
-//                                        if( iCols==nCenterFirst-25|| iCols==nCenterFirst+48 ) *pSino *= 1.014;
-//                                //        if( iCols>nCenterFirst-25 && iCols <nCenterFirst+48 ) *pSino *= 0.996;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Third Ring
-//                                        if( iCols==nCenterFirst-48|| iCols==nCenterFirst+71 ) *pSino *= 1.02;
-//                                        if( iCols==nCenterFirst-49|| iCols==nCenterFirst+72 ) *pSino *= 1.01;
-//				//	if( iCols>nCenterFirst-48 && iCols<nCenterFirst+71  ) *pSino *= 0.998;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Fourth Ring
-//                                        if( iCols==nCenterFirst-72|| iCols==nCenterFirst+95 ) *pSino *= 1.01;
-//                                        if( iCols==nCenterFirst-73|| iCols==nCenterFirst+96 ) *pSino *= 1.01;
-//                                        if( iCols>nCenterFirst-73 && iCols <nCenterFirst+96 ) *pSino *= 0.99;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Fifth Ring
-//                                        if( iCols==nCenterFirst-96|| iCols==nCenterFirst+119) *pSino *= 1.01;
-//                                        if( iCols==nCenterFirst-97|| iCols==nCenterFirst+120) *pSino *= 1.01;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Sixth Ring
-//                                        if( iCols==nCenterFirst-120||iCols==nCenterFirst+143) *pSino *= 1.008;
-//                                        //if( iCols==nCenterFirst-121||iCols==nCenterFirst+144) *pSino *= 1.01;
-//				//  //......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............
-//				//  //    The Seventh Ring
-//                                        if( iCols==nCenterFirst-145||iCols==nCenterFirst+168) *pSino *= 1.007;
-//                                        if( iCols<nCenterFirst-145 || iCols>nCenterFirst+168) *pSino *= 1.01;
-//				//  //    Ring Artifical Finished
-//......oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............oooOO0OOooo............oooOO0Ooooo............oooOO0OOooo......
+				        int key = iCols>nCenterFirst?(iCols-nCenterFirst-23):(nCenterFirst-iCols);
+					if( m_Correction[key] != 0 ) *pSino *= m_Correction[key];
+				        //std::map<int,float>::iterator it;
+				        //for(it=m_Correction.begin(); it!=m_Correction.end(); it++)
+				        //{
+					//       if( it->first < 0 )
+					//       {
+					//	 if( iCols>nCenterFirst+it->first && iCols<nCenterFirst-it->first+23 )
+					//	   *pSino *= it->second;
+					//       }
+					//       else
+					//       {
+				        //         if( iCols==nCenterFirst-it->first||iCols==nCenterFirst+23+it->first )
+					//	   *pSino *= it->second;
+					//       }
+				        //}
 					pSinoProcessed = m_ProcessedSinogram + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;
 					pSinoProcessed_1 = m_ProcessedSinogram_1 + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;					
 					float logP = 1./(*pSino);
@@ -222,47 +199,6 @@ namespace mct
 				}
 			}
 		}
-
-		// normal_tech修正
-		//for(int iPrj = 0; iPrj < m_ProjectionCounts; iPrj ++)
-		//{			
-		//	for(int iRows = 0; iRows < m_DetectorRows; iRows++)
-		//	{
-		//		for(int iDets = 0; iDets < m_DetectorCounts-1; iDets++)
-		//		{
-		//			Sino1 = 0;
-		//			Sino2 = 0;
-		//			Sino3 = 0;
-		//			Sino4 = 0;
-		//			iView1 = (iPrj-Views)>0?(iPrj-Views):0;
-		//			iView2 = (iPrj+Views)<(m_ProjectionCounts-1)?(iPrj+Views):(m_ProjectionCounts-1);
-		//			iRow1 = (iRows-Rows)>0?(iRows-Rows):0;
-		//			iRow2 = (iRows+Rows)<(m_DetectorRows-1)?(iRows+Rows):(m_DetectorRows-1);
-		//			for(int iView = iView1; iView <= iView2; iView++)
-		//			{
-		//				for(int iRow = iRow1; iRow <= iRow2; iRow++)
-		//				{
-		//					pSinoProcessed = m_ProcessedSinogram_1 + iView*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) 
-		//						+ iRow*(m_DetectorColumns+m_DetectorCounts-1) + (iDets+1)*(m_ColumnsPerDetector+1)-1;
-		//					Sino1 = Sino1 + *(pSinoProcessed-2) + 0.25*(*(pSinoProcessed+2)-*(pSinoProcessed-2));
-		//					Sino2 = Sino2 + *(pSinoProcessed-1);
-		//					Sino3 = Sino3 + *(pSinoProcessed-2) + 0.75*(*(pSinoProcessed+2)-*(pSinoProcessed-2));
-		//					Sino4 = Sino4 + *(pSinoProcessed+1);
-		//				}
-		//			}
-		//			pSinoProcessed = m_ProcessedSinogram + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) 
-		//				+ iRows*(m_DetectorColumns+m_DetectorCounts-1) + (iDets+1)*(m_ColumnsPerDetector+1)-1;	
-		//			if(((Sino1/Sino2)<1.005)&&((Sino1/Sino2)>0.99))
-		//			{
-		//				*(pSinoProcessed-1) = *(pSinoProcessed-1) * Sino1 / Sino2;
-		//			}
-		//			if(((Sino3/Sino4)<1.005)&&((Sino3/Sino4)>0.99))
-		//			{
-		//				*(pSinoProcessed+1) = *(pSinoProcessed+1) * Sino3 / Sino4;
-		//			}
-		//		}
-		//	}
-		//}
 
 		for(int iRows = 0; iRows < m_ProjectionCounts*m_DetectorRows; iRows ++)
 		{

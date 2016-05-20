@@ -74,6 +74,7 @@ ReconstructionParams InitReconParams()
 
 int main()
 {
+        clock_t start = clock();
 	ScannerGeometry scannerGeometry = InitScannerGeometry();
 	ProjectionParams prjParams = InitProjectionParams();
 	ReconstructionParams reconParams = InitReconParams();
@@ -97,9 +98,18 @@ int main()
 	fclose(fp);
 
 
+	std::map<int,float> correction;
+	std::ifstream file("Correction");
+	if( file.is_open() )
+	{
+	  int key; float value;
+	  while( file >> key >> value )
+	    correction[key] = value;
+	}
+	file.close();
 	SinogramPreProcess process;
 	process.SetPreParams(scannerGeometry, reconParams, prjParams.m_ProjectionAngleCount, pDarkImg, pAirscanImg, pSinogram);;
-	process.CallPreProcess();
+	process.CallPreProcess(correction);
 
 	CFDK recon;
 	recon.SetParams(scannerGeometry, prjParams, reconParams, process.GetPreProcessedSinogram(), 0);
@@ -115,4 +125,6 @@ int main()
 	delete[] pAirscanImg;
 	delete[] pSinogram;
 	delete[] pRecon;
+	clock_t finish = clock();
+	std::cout << double(finish-start)/CLOCKS_PER_SEC << std::endl;
 }

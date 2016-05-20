@@ -2,6 +2,7 @@
 #define _INC_MCT_RAWCORRECTION
 
 #include "mctGlobals.h"
+#include <map>
 
 namespace mct
 {
@@ -18,7 +19,7 @@ namespace mct
 		/// 原始数据预处理，包括减暗场，log，每两个探测器模块需要插值一列；
 		/// 可以把这些工作用GPU做，但后期有些校正处理部分需放在重建前做，暂时用CPU进行预处理
 		/// </summary>
-		int CallPreProcess();
+		int CallPreProcess(std::map<int,float>);
 
 		float* GetPreProcessedSinogram();
 
@@ -59,6 +60,8 @@ namespace mct
 		float *m_ProcessedSinogram;
 		int m_ProcessedSinogramLen;
 		float *m_ProcessedSinogram_1;
+
+		std::map<int,float> m_Correction;
 	};
 }
 
