@@ -156,28 +156,38 @@ namespace mct
 					pDark++; pAir++; pSino++;
 				}
 			}
-                        int nCenterFirst = nColumn / 24 * 24;
+                        int lCentralCol = nColumn / 24 * 24 + 11;
+                        int rCentralCol = lCentralCol + 1;
+			int key;
 			pSino = pSino - m_DetectorColumns*m_DetectorRows;
 
 			for(int iRows = 0; iRows < m_DetectorRows; iRows++)
 			{
 				for(int iCols = 0; iCols < m_DetectorColumns; iCols++)
 				{
-				        int key = iCols>nCenterFirst?(iCols-nCenterFirst-23):(nCenterFirst-iCols);
-					if( key==0  ) *pSino *= m_Correction[0];
-					if( key==1  ) *pSino *= m_Correction[1];
-					if( key==24 ) *pSino *= m_Correction[2];
-					if( key==25 ) *pSino *= m_Correction[3];
-					if( key==48 ) *pSino *= m_Correction[4];
-					if( key==49 ) *pSino *= m_Correction[5];
-					if( key==72 ) *pSino *= m_Correction[6];
-					if( key==73 ) *pSino *= m_Correction[7];
-					if( key==96 ) *pSino *= m_Correction[8];
-					if( key==97 ) *pSino *= m_Correction[9];
-					if( key==120) *pSino *= m_Correction[10];
-					if( key==121) *pSino *= m_Correction[11];
-					if( key==144) *pSino *= m_Correction[12];
-					if( key==145) *pSino *= m_Correction[13];
+				        if( iCols<rCentralCol ) key = lCentralCol - iCols;
+					if( iCols>lCentralCol ) key = iCols - rCentralCol;
+					if( key==11  ) *pSino *= m_Correction[0];
+					if( key==12  ) *pSino *= m_Correction[1];
+					if( key<=12  ) *pSino *= m_Correction[2];
+					if( key==35  ) *pSino *= m_Correction[3];
+					if( key==36  ) *pSino *= m_Correction[4];
+					if( key<=36  ) *pSino *= m_Correction[5];
+					if( key==59  ) *pSino *= m_Correction[6];
+					if( key==60  ) *pSino *= m_Correction[7];
+					if( key<=60  ) *pSino *= m_Correction[8];
+					if( key==83  ) *pSino *= m_Correction[9];
+					if( key==84  ) *pSino *= m_Correction[10];
+					if( key<=84  ) *pSino *= m_Correction[11];
+					if( key==107 ) *pSino *= m_Correction[12];
+					if( key==108 ) *pSino *= m_Correction[13];
+					if( key<=108 ) *pSino *= m_Correction[14];
+					if( key==131 ) *pSino *= m_Correction[15];
+					if( key==132 ) *pSino *= m_Correction[16];
+					if( key<=132 ) *pSino *= m_Correction[17];
+					if( key==155 ) *pSino *= m_Correction[18];
+					if( key==156 ) *pSino *= m_Correction[19];
+					if( key>156  ) *pSino *= m_Correction[20];
 
 					pSinoProcessed = m_ProcessedSinogram + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;
 					pSinoProcessed_1 = m_ProcessedSinogram_1 + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;					

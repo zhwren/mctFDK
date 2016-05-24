@@ -72,7 +72,7 @@ ReconstructionParams InitReconParams()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
         clock_t start = clock();
 	ScannerGeometry scannerGeometry = InitScannerGeometry();
@@ -98,9 +98,11 @@ int main()
 	fclose(fp);
 
 
-	float *correction = new float[20];
-	memset(correction, 1., sizeof(float)*20);
-	std::ifstream file("Correction");
+	float *correction = new float[21];
+	for(int i=0; i<21; i++) correction[i] = 1.;
+
+	std::string Correction = argc>1?argv[1]:"";
+	std::ifstream file( Correction.c_str() );
 	if( file.is_open() )
 	{
 	  int key=0;
@@ -119,7 +121,8 @@ int main()
 	recon.CallRecon();
 	recon.getReconstruction(pRecon);
 
-	fp = fopen("ReconData.rcn","wb");
+	std::string ReconData = argc>2?argv[2]:"ReconData.rcn";
+	fp = fopen( ReconData.c_str(), "wb");
 	fwrite(pRecon,sizeof(float),reconParams.m_ReconColumnCount*reconParams.m_ReconRowCount*reconParams.m_ReconSliceCount,fp);
 	fclose(fp);
 
