@@ -11,7 +11,6 @@ import struct
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import savefig
 
 fmt = str(512*512*10) + 'f'
 class mct:
@@ -57,9 +56,11 @@ class mct:
                 for j in range(512):
                     self.imgData[i,j] = self.imgData[i,j]+self.data[i*512+j+512*512*n]/10
         cmap = mpl.cm.gray
-        norm = mpl.colors.Normalize(vmin=0.019,vmax=0.025)
+        norm = mpl.colors.Normalize(vmin=0.019,vmax=0.023)
         plt.figure(figsize=(6,6))
         plt.imshow(self.imgData,cmap=cmap,norm=norm)
+        plt.savefig("RingAndBandingArtificalCorrection.png")
+        plt.savefig("RingAndBandingArtificalCorrection.eps")
         plt.figure(figsize=(6,6))
         plt.plot(range(512), self.imgData[256,:])
         plt.show()

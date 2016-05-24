@@ -165,6 +165,7 @@ namespace mct
 			{
 				for(int iCols = 0; iCols < m_DetectorColumns; iCols++)
 				{
+				        std::cout << *pSino << "     ";
 				        if( iCols<rCentralCol ) key = lCentralCol - iCols;
 					if( iCols>lCentralCol ) key = iCols - rCentralCol;
 					if( key==11  ) *pSino *= m_Correction[0];
@@ -188,6 +189,7 @@ namespace mct
 					if( key==155 ) *pSino *= m_Correction[18];
 					if( key==156 ) *pSino *= m_Correction[19];
 					if( key>156  ) *pSino *= m_Correction[20];
+				        std::cout << *pSino << std::endl;;
 
 					pSinoProcessed = m_ProcessedSinogram + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;
 					pSinoProcessed_1 = m_ProcessedSinogram_1 + iPrj*m_DetectorRows*(m_DetectorColumns+m_DetectorCounts-1) + iRows*(m_DetectorColumns+m_DetectorCounts-1) + iCols + iCols/m_ColumnsPerDetector;					
