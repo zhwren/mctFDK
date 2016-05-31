@@ -85,15 +85,15 @@ int main(int argc, char* argv[])
 	float *pSinogram = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount];
 	float *pRecon = new float[reconParams.m_ReconColumnCount*reconParams.m_ReconRowCount*reconParams.m_ReconSliceCount];
 
-	FILE *fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/DarkImg.bin","rb");
+	FILE *fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/Dark/Dark.bin","rb");
 	fread(pDarkImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount,fp);
 	fclose(fp);
 
-	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/airresult/air1.bin","rb");
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/Air/AirScan.bin","rb");
 	fread(pAirscanImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 
-	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/CT2RingArtifical/sinoresult/sino1.bin","rb");
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/DataDensity/ScanData.bin","rb");
 	fread(pSinogram,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 
@@ -131,5 +131,5 @@ int main(int argc, char* argv[])
 	delete[] pSinogram;
 	delete[] pRecon;
 	clock_t finish = clock();
-	std::cout << double(finish-start)/CLOCKS_PER_SEC << std::endl;
+	std::cerr << double(finish-start)/CLOCKS_PER_SEC << std::endl;
 }
