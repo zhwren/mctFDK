@@ -85,15 +85,15 @@ int main(int argc, char* argv[])
 	float *pSinogram = new float[scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount];
 	float *pRecon = new float[reconParams.m_ReconColumnCount*reconParams.m_ReconRowCount*reconParams.m_ReconSliceCount];
 
-	FILE *fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/Dark/Dark.bin","rb");
+	FILE *fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160601/Dark/Dark.bin","rb");
 	fread(pDarkImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount,fp);
 	fclose(fp);
 
-	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/Air/AirScan.bin","rb");
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160601/Air/AirScan.bin","rb");
 	fread(pAirscanImg,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 
-	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160531/DataDensity/ScanData.bin","rb");
+	fp = fopen("/home/zhwren/Workfs/CTRecons/Datas/20160601/Density/ScanData.bin","rb");
 	fread(pSinogram,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 

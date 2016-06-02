@@ -156,8 +156,8 @@ namespace mct
 					pDark++; pAir++; pSino++;
 				}
 			}
-                        int lCentralCol = 251;nColumn / 24 * 24 + 11;
-                        int rCentralCol = 252;lCentralCol + 1;
+                        int lCentralCol = nColumn / 24 * 24 + 11;
+                        int rCentralCol = lCentralCol + 1;
 			int key;
 			pSino = pSino - m_DetectorColumns*m_DetectorRows;
 
