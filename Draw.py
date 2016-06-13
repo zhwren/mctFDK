@@ -67,3 +67,4 @@ class mct:
 
 if __name__ == "__main__":
     mct(0).add()
+    mct(0).draw()
