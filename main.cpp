@@ -1,6 +1,6 @@
 #include "mct.h"
 #include <stdio.h>
-
+#include "mctCorrection.hh"
 using namespace mct;
 
 /// <summary>
@@ -97,20 +97,10 @@ int main(int argc, char* argv[])
 	fread(pSinogram,sizeof(float),scannerGeometry.m_DetectorColumnCount*scannerGeometry.m_DetectorRowCount*prjParams.m_ProjectionAngleCount,fp);
 	fclose(fp);
 
-
-	float *correction = new float[21];
-	for(int i=0; i<21; i++) correction[i] = 1.;
-
 	std::string Correction = argc>1?argv[1]:"";
-	std::ifstream file( Correction.c_str() );
-	if( file.is_open() )
-	{
-	  int key=0;
-	  while( file >> correction[key] )
-	    key++;
-	}
-	file.close();
-
+	mctCorrection* c = new mctCorrection(pDarkImg, pAirscanImg, pSinogram);
+	float *correction = c->getCorrectionMatrix( Correction.c_str() );
+	
 	SinogramPreProcess process;
 	process.SetPreParams(scannerGeometry, reconParams, prjParams.m_ProjectionAngleCount, pDarkImg, pAirscanImg, pSinogram);;
 	process.CallPreProcess(correction);
